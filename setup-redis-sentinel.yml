@@ -13,9 +13,6 @@
       service:
         name: redis-sentinel
         state: restarted
-    - name: reload ufw
-      ufw:
-        state: reloaded
   tasks:
     - name: Add redis signing key
       apt_key:
@@ -32,14 +29,6 @@
     - name: Install redis-sentinel
       apt:
         name: redis-sentinel
-    - name: Allow all traffic from all active hosts on this host
-      ufw:
-        rule: allow
-        src: "{{ hostvars[item]['ansible_host'] }}"
-        comment: "Server {{ item }}"
-      with_items: "{{ vars['ansible_play_hosts_all'] }}"
-      notify:
-        - reload ufw
     - name: Wait Redis Started
       wait_for:
         port: 6379
@@ -53,6 +42,23 @@
         name: redis-sentinel
         enabled: yes
         masked: no
+
+    - name: Allow port 6379 internally
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "6379"
+        source: 10.0.0.0/16
+        jump: ACCEPT
+
+    - name: Allow port 26379 internally
+      ansible.builtin.iptables:
+        chain: INPUT
+        protocol: tcp
+        destination_port: "26379"
+        source: 10.0.0.0/16
+        jump: ACCEPT
+
     - name: Update redis.conf
       lineinfile:
         path: /etc/redis/redis.conf
