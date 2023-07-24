@@ -1,4 +1,4 @@
 [redis]
-server-01 ansible_host=<SERVER_01_IP> role=master
-server-02 ansible_host=<SERVER_02_IP> role=replica
-server-03 ansible_host=<SERVER_03_IP> role=replica
+server-01 ansible_host=<SERVER_01_IP> role=master ansible_ssh_private_key_file=/k ansible_user=me
+server-02 ansible_host=<SERVER_02_IP> role=replica ansible_ssh_private_key_file=/k ansible_user=me
+server-03 ansible_host=<SERVER_03_IP> role=replica ansible_ssh_private_key_file=/k ansible_user=me
