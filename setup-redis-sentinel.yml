@@ -50,6 +50,7 @@
         destination_port: "6379"
         source: 10.0.0.0/16
         jump: ACCEPT
+        rule_num: 1
 
     - name: Allow port 26379 internally
       ansible.builtin.iptables:
@@ -58,6 +59,7 @@
         destination_port: "26379"
         source: 10.0.0.0/16
         jump: ACCEPT
+        rule_num: 2
 
     - name: Update redis.conf
       lineinfile:
